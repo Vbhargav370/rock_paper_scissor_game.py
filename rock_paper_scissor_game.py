@@ -16,13 +16,13 @@ class RockPaperScissorsGame:
         self.button_frame = tk.Frame(self.root)
         self.button_frame.pack(pady=20)
         
-        self.rock_button = tk.Button(self.button_frame, text="Rock", width=15, command=lambda: self.play_game("rock"))
+        self.rock_button = tk.Button(self.button_frame, text="Rock", width=15, command=lambda: self.play_game(0))
         self.rock_button.grid(row=0, column=0, padx=10)
         
-        self.paper_button = tk.Button(self.button_frame, text="Paper", width=15, command=lambda: self.play_game("paper"))
+        self.paper_button = tk.Button(self.button_frame, text="Paper", width=15, command=lambda: self.play_game(1))
         self.paper_button.grid(row=0, column=1, padx=10)
         
-        self.scissors_button = tk.Button(self.button_frame, text="Scissors", width=15, command=lambda: self.play_game("scissors"))
+        self.scissors_button = tk.Button(self.button_frame, text="Scissors", width=15, command=lambda: self.play_game(2))
         self.scissors_button.grid(row=0, column=2, padx=10)
         
         self.result_label = tk.Label(self.root, text="", font=("Helvetica", 14))
@@ -38,36 +38,35 @@ class RockPaperScissorsGame:
         self.quit_button.pack(pady=5)
         
     def play_game(self, user_choice):
-        computer_choice = random.choice(['rock', 'paper', 'scissors'])
-        winner = self.determine_winner(user_choice, computer_choice)
+        computer_choice = random.randint(0, 2)
+        result = self.check_winner(user_choice, computer_choice)
         
-        if winner == "user":
+        if result == "win":
             self.user_score += 1
-        elif winner == "computer":
+        elif result == "lose":
             self.computer_score += 1
         
+        choices = ["Rock", "Paper", "Scissors"]
         self.result_label.config(
-            text=f"You chose: {user_choice} | Computer chose: {computer_choice}\nResult: {self.get_result_message(winner)}"
+            text=f"You chose: {choices[user_choice]} | Computer chose: {choices[computer_choice]}\nResult: {self.get_result_message(result)}"
         )
         
         self.score_label.config(
             text=f"Score: You {self.user_score} - {self.computer_score} Computer"
         )
         
-    def determine_winner(self, user_choice, computer_choice):
-        if user_choice == computer_choice:
+    def check_winner(self, user, computer):
+        if user == computer:
             return "tie"
-        elif (user_choice == 'rock' and computer_choice == 'scissors') or \
-             (user_choice == 'scissors' and computer_choice == 'paper') or \
-             (user_choice == 'paper' and computer_choice == 'rock'):
-            return "user"
+        elif (user == 0 and computer == 2) or (user == 1 and computer == 0) or (user == 2 and computer == 1):
+            return "win"
         else:
-            return "computer"
+            return "lose"
         
-    def get_result_message(self, winner):
-        if winner == "tie":
+    def get_result_message(self, result):
+        if result == "tie":
             return "It's a tie!"
-        elif winner == "user":
+        elif result == "win":
             return "You win!"
         else:
             return "You lose!"
